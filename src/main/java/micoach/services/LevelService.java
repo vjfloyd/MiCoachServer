@@ -12,12 +12,12 @@ import micoach.entities.User;
 
 @Service
 @Transactional
-public class UserService {
+public class LevelService {
 
 	private final UserRepository userRepository;
 	
 	
-	public UserService(UserRepository personRepository){
+	public LevelService(UserRepository personRepository){
 		this.userRepository = personRepository;
 	}
 	

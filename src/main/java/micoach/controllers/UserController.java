@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import micoach.entities.*;
+import micoach.services.CourseService;
 import micoach.services.UserService;
 
 @RestController
@@ -19,7 +20,10 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
-
+	
+	@Autowired
+	private CourseService courseService;
+	
 	@GetMapping("/index")
 	public String hello(){
 		return "Im CEO bitch";
@@ -34,4 +38,12 @@ public class UserController {
 	public String index(){
 		return "index";
 	}
+	
+	@RequestMapping(value="/courses", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody List<Course> courseByUser(int id){
+		return courseService.listCourseByUser(1);
+		
+	}
+	
+	
 }
