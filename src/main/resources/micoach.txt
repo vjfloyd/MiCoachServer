@@ -1,0 +1,259 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema MiCoach
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema MiCoach
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `MiCoach` DEFAULT CHARACTER SET utf8 ;
+USE `MiCoach` ;
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`Persona`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`Persona` (
+  `idusuario` INT NOT NULL AUTO_INCREMENT,
+  `nombres` VARCHAR(60) NULL,
+  `apellidos` VARCHAR(60) NULL,
+  `direccion` VARCHAR(60) NULL,
+  `dni` VARCHAR(45) NULL,
+  `celular` VARCHAR(45) NULL,
+  `correo` VARCHAR(45) NULL,
+  PRIMARY KEY (`idusuario`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`EstadoCuenta`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`EstadoCuenta` (
+  `idEstadoCuenta` INT NOT NULL,
+  `tipoCuenta` VARCHAR(45) NULL,
+  `idUsuario` VARCHAR(45) NULL,
+  PRIMARY KEY (`idEstadoCuenta`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`TipoPago`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`TipoPago` (
+  `idTipoPago` INT NOT NULL,
+  `descripcion` VARCHAR(45) NULL,
+  `tipoTarjeta` VARCHAR(45) NULL,
+  PRIMARY KEY (`idTipoPago`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`Nivel`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`Nivel` (
+  `idNivel` INT NOT NULL,
+  `nombre` VARCHAR(45) NULL,
+  PRIMARY KEY (`idNivel`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`Usuario`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`Usuario` (
+  `idUsuario` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NULL,
+  `contrasena` VARCHAR(50) NULL,
+  `tipoUsuario` VARCHAR(45) NULL,
+  `foto` BLOB NULL,
+  `instruccion` VARCHAR(45) NULL,
+  PRIMARY KEY (`idUsuario`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`Area`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`Area` (
+  `idAreas` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NULL,
+  PRIMARY KEY (`idAreas`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`Curso`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`Curso` (
+  `idCurso` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NULL,
+  `Area_idAreas` INT NOT NULL,
+  `Nivel_idNivel` INT NOT NULL,
+  PRIMARY KEY (`idCurso`, `Area_idAreas`, `Nivel_idNivel`),
+  INDEX `fk_Curso_Area_idx` (`Area_idAreas` ASC),
+  INDEX `fk_Curso_Nivel1_idx` (`Nivel_idNivel` ASC),
+  CONSTRAINT `fk_Curso_Area`
+    FOREIGN KEY (`Area_idAreas`)
+    REFERENCES `MiCoach`.`Area` (`idAreas`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Curso_Nivel1`
+    FOREIGN KEY (`Nivel_idNivel`)
+    REFERENCES `MiCoach`.`Nivel` (`idNivel`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`SesionPactada`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`SesionPactada` (
+  `idClasePactada` INT NOT NULL,
+  `direccion` VARCHAR(45) NULL,
+  `hora` VARCHAR(45) NULL,
+  `ClasePactadacol` VARCHAR(45) NULL,
+  `Usuario_idUsuario` INT NOT NULL,
+  `idComentarioSesion` VARCHAR(45) NOT NULL,
+  `Curso_idCurso` INT NOT NULL,
+  `TipoPago_idTipoPago` INT NOT NULL,
+  `ocurrio` INT NULL,
+  PRIMARY KEY (`idClasePactada`, `Usuario_idUsuario`, `idComentarioSesion`, `Curso_idCurso`, `TipoPago_idTipoPago`),
+  INDEX `fk_ClasePactada_Usuario1_idx` (`Usuario_idUsuario` ASC),
+  INDEX `fk_SesionPactada_Curso1_idx` (`Curso_idCurso` ASC),
+  INDEX `fk_SesionPactada_TipoPago1_idx` (`TipoPago_idTipoPago` ASC),
+  CONSTRAINT `fk_ClasePactada_Usuario1`
+    FOREIGN KEY (`Usuario_idUsuario`)
+    REFERENCES `MiCoach`.`Usuario` (`idUsuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_SesionPactada_Curso1`
+    FOREIGN KEY (`Curso_idCurso`)
+    REFERENCES `MiCoach`.`Curso` (`idCurso`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_SesionPactada_TipoPago1`
+    FOREIGN KEY (`TipoPago_idTipoPago`)
+    REFERENCES `MiCoach`.`TipoPago` (`idTipoPago`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`EstmimacionCurso`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`EstmimacionCurso` (
+  `Usuario_idUsuario` INT NOT NULL,
+  `Curso_idCurso` INT NOT NULL,
+  `costoHora` VARCHAR(45) NULL,
+  PRIMARY KEY (`Usuario_idUsuario`, `Curso_idCurso`),
+  INDEX `fk_Usuario_has_Curso_Curso1_idx` (`Curso_idCurso` ASC),
+  INDEX `fk_Usuario_has_Curso_Usuario1_idx` (`Usuario_idUsuario` ASC),
+  CONSTRAINT `fk_Usuario_has_Curso_Usuario1`
+    FOREIGN KEY (`Usuario_idUsuario`)
+    REFERENCES `MiCoach`.`Usuario` (`idUsuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Usuario_has_Curso_Curso1`
+    FOREIGN KEY (`Curso_idCurso`)
+    REFERENCES `MiCoach`.`Curso` (`idCurso`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`Rol`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`Rol` (
+  `idRolUsuario` INT NOT NULL,
+  `nombre` VARCHAR(45) NULL,
+  PRIMARY KEY (`idRolUsuario`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`RolUsuario`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`RolUsuario` (
+  `idUsuario` INT NOT NULL,
+  `idRol` INT NOT NULL,
+  `idRolUsuario` INT NOT NULL,
+  PRIMARY KEY (`idUsuario`, `idRol`, `idRolUsuario`),
+  INDEX `fk_Usuario_has_TipoCuenta_TipoCuenta1_idx` (`idRol` ASC),
+  INDEX `fk_Usuario_has_TipoCuenta_Usuario1_idx` (`idUsuario` ASC),
+  CONSTRAINT `fk_Usuario_has_TipoCuenta_Usuario1`
+    FOREIGN KEY (`idUsuario`)
+    REFERENCES `MiCoach`.`Usuario` (`idUsuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Usuario_has_TipoCuenta_TipoCuenta1`
+    FOREIGN KEY (`idRol`)
+    REFERENCES `MiCoach`.`Rol` (`idRolUsuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`ComentarioSesion`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`ComentarioSesion` (
+  `idUsuario` INT NOT NULL AUTO_INCREMENT,
+  `idRolUsuario` INT NOT NULL,
+  `idClasePactada` INT NOT NULL,
+  `idComentarioSesion` INT NOT NULL,
+  `FechaCreacion` VARCHAR(45) NULL,
+  `ComentarioValoracion` VARCHAR(45) NULL,
+  `tipoValoracion` VARCHAR(45) NULL,
+  PRIMARY KEY (`idUsuario`, `idRolUsuario`, `idClasePactada`, `idComentarioSesion`),
+  INDEX `fk_Usuario_has_TipoCuenta_has_ClasePactada_ClasePactada1_idx` (`idClasePactada` ASC),
+  INDEX `fk_Usuario_has_TipoCuenta_has_ClasePactada_Usuario_has_Tipo_idx` (`idUsuario` ASC, `idRolUsuario` ASC),
+  CONSTRAINT `fk_Usuario_has_TipoCuenta_has_ClasePactada_Usuario_has_TipoCu1`
+    FOREIGN KEY (`idUsuario` , `idRolUsuario`)
+    REFERENCES `MiCoach`.`RolUsuario` (`idUsuario` , `idRol`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Usuario_has_TipoCuenta_has_ClasePactada_ClasePactada1`
+    FOREIGN KEY (`idClasePactada`)
+    REFERENCES `MiCoach`.`SesionPactada` (`idClasePactada`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`Transaccion`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`Transaccion` (
+  `idTransaccion` INT NOT NULL,
+  `idBanco` VARCHAR(45) NULL,
+  PRIMARY KEY (`idTransaccion`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MiCoach`.`Ubicacion`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MiCoach`.`Ubicacion` (
+  `idUbicacion` INT NOT NULL,
+  `UbicacionDescripcion` VARCHAR(45) NULL,
+  `Usuario_idUsuario` INT NOT NULL,
+  PRIMARY KEY (`idUbicacion`, `Usuario_idUsuario`),
+  INDEX `fk_Ubicacion_Usuario1_idx` (`Usuario_idUsuario` ASC),
+  CONSTRAINT `fk_Ubicacion_Usuario1`
+    FOREIGN KEY (`Usuario_idUsuario`)
+    REFERENCES `MiCoach`.`Usuario` (`idUsuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
