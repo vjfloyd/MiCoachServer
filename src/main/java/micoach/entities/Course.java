@@ -3,11 +3,17 @@ package micoach.entities;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name="course")
 @NamedQuery(name = "course.findByIdUser", query = "select c from course c, coursecost cc,  user u where u.iduser = cc.iduser and  cc.idcourse = c.idcourse  and u.iduser = ?1")    
 public class Course implements Serializable{
@@ -22,10 +28,14 @@ public class Course implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int idcourse;
+	private Integer idcourse;
 	private String description;
-	private Area idArea;
-	private Level idLevel;
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="idarea")
+	private Area idarea;
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="idlevel")
+	private Level idlevel;
 	
 	public Course(){}
 
@@ -46,19 +56,19 @@ public class Course implements Serializable{
 	}
 
 	public Area getIdArea() {
-		return idArea;
+		return idarea;
 	}
 
 	public void setIdArea(Area idArea) {
-		this.idArea = idArea;
+		this.idarea = idArea;
 	}
 
 	public Level getIdLevel() {
-		return idLevel;
+		return idlevel;
 	}
 
 	public void setIdLevel(Level idLevel) {
-		this.idLevel = idLevel;
+		this.idlevel = idLevel;
 	}
 
 	

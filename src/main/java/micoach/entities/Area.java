@@ -20,7 +20,7 @@ public class Area implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int idarea;
+	private Integer idarea;
 	private String description;
 	
 	

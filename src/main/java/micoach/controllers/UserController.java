@@ -40,7 +40,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/courses", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody List<Course> courseByUser(int id){
+	public @ResponseBody List<Course> courseByUser(){
 		return courseService.listCourseByUser(1);
 		
 	}

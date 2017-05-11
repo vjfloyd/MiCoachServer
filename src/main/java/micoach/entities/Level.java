@@ -20,7 +20,7 @@ public class Level implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int idlevel;
+	private Integer idlevel;
 	private String name;
 	
 	public Level(){}

@@ -3,11 +3,18 @@ package micoach.entities;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name="coursecost")
 public class CourseCost implements Serializable{
 
@@ -21,28 +28,45 @@ public class CourseCost implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int iduser;
+	private Integer coursecost;
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="iduser")
+	private User iduser;
 	private String idcourse;
 	private String costoHora;
 	
+	 //@OneToMany(fetch = FetchType.EAGER
+	
 	public CourseCost(){}
 
-	public int getIduser() {
+	@JsonProperty
+	public Integer getCoursecost() {
+		return coursecost;
+	}
+
+	public void setCoursecost(Integer coursecost) {
+		this.coursecost = coursecost;
+	}
+	
+	@JsonProperty
+	public User getIduser() {
 		return iduser;
 	}
 
-	public void setIduser(int iduser) {
+	public void setIdUser(User iduser) {
 		this.iduser = iduser;
 	}
 
-	public String getIdcurso() {
+	@JsonProperty
+	public String getIdcourse() {
 		return idcourse;
 	}
 
-	public void setIdcurso(String idcurso) {
-		this.idcourse = idcurso;
+	public void setIdcourse(String idcourse) {
+		this.idcourse = idcourse;
 	}
 
+	@JsonProperty
 	public String getCostoHora() {
 		return costoHora;
 	}
@@ -51,6 +75,7 @@ public class CourseCost implements Serializable{
 		this.costoHora = costoHora;
 	}
 
+	
 
 	
 
