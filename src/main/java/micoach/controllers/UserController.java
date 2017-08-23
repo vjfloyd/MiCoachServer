@@ -15,7 +15,7 @@ import micoach.services.CourseService;
 import micoach.services.UserService;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/micoach")
 public class UserController {
 	
 	@Autowired
