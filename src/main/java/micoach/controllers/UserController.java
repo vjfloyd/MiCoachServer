@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import micoach.entities.*;
+import micoach.entity.expose.Userexpose;
 import micoach.services.CourseService;
 import micoach.services.UserService;
 
@@ -31,6 +32,11 @@ public class UserController {
 	
 	@RequestMapping(value = "/users", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody List<User> listEmployes(){
+		List<User> lista = userService.listUsers();
+		Userexpose userList = new Userexpose();
+		userList.setListUserExpose(lista);
+		//return userList;
+		
 		return userService.listUsers();
 	}
 	
